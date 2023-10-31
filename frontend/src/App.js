@@ -14,7 +14,7 @@ function App() {
       }
     })
   }, [])
-  console.log("F");
+ 
   return (
     <Router>
       <Header />
