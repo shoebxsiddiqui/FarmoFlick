@@ -9,6 +9,8 @@ import Pagination from "react-js-pagination";
 import { useState } from "react";
 import Slider from "@material-ui/core/Slider";
 import { Typography } from "@material-ui/core";
+import { useAlert } from "react-alert";
+import MetaData from "../layout/MetaData";
 
 const categories = [
   "Laptop",
@@ -24,10 +26,13 @@ const categories = [
 const Products = () => {
   const dispatch = useDispatch();
   const { keyword } = useParams();
+  const alert = useAlert();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [price, setPrice] = useState([0, 25000]);
   const [category, setCategory] = useState("");
+  const [ratings, setratings] = useState(0);
+
   const {
     products,
     loading,
@@ -44,8 +49,14 @@ const Products = () => {
     setPrice(newPrice);
   };
   useEffect(() => {
-    dispatch(getProducts(keyword, currentPage, price, category));
-  }, [dispatch, keyword, currentPage, price, category]);
+    if (error) {
+      alert.error(error);
+      dispatch(clearErrors());
+    }
+    dispatch(
+      getProducts(keyword, currentPage, price, category, ratings, alert, error)
+    );
+  }, [dispatch, keyword, currentPage, price, category, ratings, alert, error]);
 
   let count = filteredProductsCount;
   return (
@@ -54,6 +65,7 @@ const Products = () => {
         <Loader />
       ) : (
         <Fragment>
+          <MetaData title={"PRODUCTS -- ECOMMERCE"} />
           <h2 className="productsHeading">Products</h2>
           <div className="products">
             {products &&
@@ -84,6 +96,18 @@ const Products = () => {
                 </li>
               ))}
             </ul>
+            <fieldset>
+              <Typography component="legend">Ratings Above</Typography>
+              <Slider
+                value={ratings}
+                onChange={(e, newRatings) => {
+                  setratings(newRatings);
+                }}
+                aria-labelledby="continuous-slider"
+                min={0}
+                max={5}
+              />
+            </fieldset>
           </div>
           {resultPerPage < count && (
             <div className="paginationBox">
