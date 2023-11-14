@@ -7,21 +7,47 @@ import ProductCard from "../Home/ProductCard";
 import { useParams } from "react-router-dom";
 import Pagination from "react-js-pagination";
 import { useState } from "react";
+import Slider from "@material-ui/core/Slider";
+import { Typography } from "@material-ui/core";
+
+const categories = [
+  "Laptop",
+  "Footwear",
+  "Bottom",
+  "Tops",
+  "Attire",
+  "Camera",
+  "SmartPhones",
+  "clothes",
+];
 
 const Products = () => {
   const dispatch = useDispatch();
+  const { keyword } = useParams();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [price, setPrice] = useState([0, 25000]);
+  const [category, setCategory] = useState("");
+  const {
+    products,
+    loading,
+    error,
+    productsCount,
+    resultPerPage,
+    filteredProductsCount,
+  } = useSelector((state) => state.products);
 
-  const { products, loading, error, productsCount, resultPerPage } =
-    useSelector((state) => state.products);
-  const { keyword } = useParams();
   const setCurrentPageNo = (e) => {
     setCurrentPage(e);
   };
+  const priceHandler = (event, newPrice) => {
+    setPrice(newPrice);
+  };
   useEffect(() => {
-    dispatch(getProducts(keyword, currentPage));
-  }, [dispatch, keyword, currentPage]);
+    dispatch(getProducts(keyword, currentPage, price, category));
+  }, [dispatch, keyword, currentPage, price, category]);
+
+  let count = filteredProductsCount;
   return (
     <Fragment>
       {loading ? (
@@ -35,7 +61,31 @@ const Products = () => {
                 <ProductCard key={product._id} product={product} />
               ))}
           </div>
-          {resultPerPage < productsCount && (
+
+          <div className="filterBox">
+            <Typography>Price</Typography>
+            <Slider
+              value={price}
+              onChange={priceHandler}
+              valueLabelDisplay="auto"
+              aria-labelledby="range-slider"
+              min={0}
+              max={25000}
+            />
+            <Typography>Categories</Typography>
+            <ul className="categoryBox">
+              {categories.map((category) => (
+                <li
+                  className="category-link"
+                  key={category}
+                  onClick={() => setCategory(category)}
+                >
+                  {category}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {resultPerPage < count && (
             <div className="paginationBox">
               <Pagination
                 activePage={currentPage}
