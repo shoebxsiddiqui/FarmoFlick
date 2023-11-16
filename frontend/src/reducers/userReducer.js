@@ -40,47 +40,38 @@ import {
   //   USER_DETAILS_FAIL,
   CLEAR_ERRORS,
 } from "../constants/userConstants";
-import axios from "axios";
 
-export const login = (email, password) => async (dispatch) => {
-  try {
-    console.log("hi");
-    dispatch({ type: LOGIN_REQUEST });
-
-    const config = { headers: { "Content-Type": "application/json" } };
-
-    const { data } = await axios.post(
-      `/api/v1/login`,
-      { email, password },
-      config
-    );
-
-    dispatch({ type: LOGIN_SUCCESS, payload: data.user });
-  } catch (error) {
-    dispatch({ type: LOGIN_FAIL, payload: error.response.data.message });
+export const userReducer = (state = { user: [] }, action) => {
+  switch (action.type) {
+    case REGISTER_USER_REQUEST:
+    case LOGIN_REQUEST:
+      return {
+        loading: true,
+        isAuthenticated: false,
+      };
+    case REGISTER_USER_SUCCESS:
+    case LOGIN_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        isAuthenticated: true,
+        user: action.payload,
+      };
+    case REGISTER_USER_FAIL:
+    case LOGIN_FAIL:
+      return {
+        ...state,
+        loading: false,
+        isAuthenticated: false,
+        user: null,
+        error: action.payload,
+      };
+    case CLEAR_ERRORS:
+      return {
+        ...state,
+        error: null,
+      };
+    default:
+      return state;
   }
-};
-
-export const register = (userData) => async (dispatch) => {
-  try {
-    dispatch({ type: REGISTER_USER_REQUEST });
-
-    const config = { headers: { "Content-Type": "multipart/form-data" } };
-
-    const { data } = await axios.post(`/api/v1/register`, userData, config);
-
-    dispatch({ type: REGISTER_USER_SUCCESS, payload: data.user });
-  } catch (error) {
-    dispatch({
-      type: REGISTER_USER_FAIL,
-      payload: error.response.data.message,
-    });
-  }
-};
-
-// Clearing Errors
-export const clearErrors = () => async (dispatch) => {
-  dispatch({
-    type: CLEAR_ERRORS,
-  });
 };
