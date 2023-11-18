@@ -6,7 +6,6 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import PersonIcon from "@material-ui/icons/Person";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ListAltIcon from "@material-ui/icons/ListAlt";
-import Dashboard from "@material-ui/icons/Dashboard";
 import { logout } from "../../../actions/userAction.js";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "react-alert";
