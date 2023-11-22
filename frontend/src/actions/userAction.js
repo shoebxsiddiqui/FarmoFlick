@@ -19,9 +19,9 @@ import {
   FORGOT_PASSWORD_REQUEST,
   FORGOT_PASSWORD_SUCCESS,
   FORGOT_PASSWORD_FAIL,
-  //   RESET_PASSWORD_REQUEST,
-  //   RESET_PASSWORD_SUCCESS,
-  //   RESET_PASSWORD_FAIL,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAIL,
   //   ALL_USERS_REQUEST,
   //   ALL_USERS_SUCCESS,
   //   ALL_USERS_FAIL,
@@ -162,6 +162,29 @@ export const forgotPassword = (email) => async (dispatch) => {
     });
   }
 };
+
+// Reset Password
+export const resetPassword =
+  (token, password, confirmPassword) => async (dispatch) => {
+    try {
+      dispatch({ type: RESET_PASSWORD_REQUEST });
+
+      const config = { headers: { "Content-Type": "application/json" } };
+
+      const { data } = await axios.put(
+        `/api/v1/password/reset/${token}`,
+        { password, confirmPassword },
+        config
+      );
+      console.log(data);
+      dispatch({ type: RESET_PASSWORD_SUCCESS, payload: data.success });
+    } catch (error) {
+      dispatch({
+        type: RESET_PASSWORD_FAIL,
+        payload: error.response.data.message,
+      });
+    }
+  };
 
 // Clearing Errors
 export const clearErrors = () => async (dispatch) => {
