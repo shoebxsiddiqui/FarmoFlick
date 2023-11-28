@@ -4,7 +4,7 @@ import Footer from "./component/layout/Footer/Footer.js";
 import Home from "./component/Home/Home.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import WebFont from "webfontloader";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ProductDetails from "./component/Product/ProductDetails.js";
 import Products from "./component/Product/Products.js";
 import Search from "./component/Product/Search.js";
@@ -22,17 +22,29 @@ import ResetPassword from "./component/User/ResetPassword.js";
 import Cart from "./component/Cart/Cart.js";
 import Shipping from "./component/Cart/Shipping.js";
 import ConfirmOrder from "./component/Cart/ConfirmOrder.js";
+import Payment from "./component/Cart/Payment.js";
+import OrderSuccess from "./component/Cart/OrderSuccess.js";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
+  const [stripeApiKey, setSetstripeApiKey] = useState("");
 
-  React.useEffect(() => {
+  async function getStripeApiKey() {
+    const { data } = await axios.get("/api/v1/stripeapikey");
+    setSetstripeApiKey(data.stripeApiKey);
+  }
+
+  useEffect(() => {
     WebFont.load({
       google: {
         families: ["Roboto", "Droid Sans", "Chilanka"],
       },
     });
     store.dispatch(loadUser());
+    getStripeApiKey();
   }, []);
 
   return (
@@ -46,13 +58,6 @@ function App() {
         <Route path="/products/:keyword" element={<Products />} />
         <Route exact path="/search" element={<Search />} />
         <Route exact path="/login" element={<LoginSignUp />} />
-        <Route element={<ProtectedRoute />}>
-          <Route exact path="/account" element={<Profile />} />
-          <Route exact path="/me/update" element={<UpdateProfile />} />
-          <Route exact path="/password/update" element={<UpdatePassword />} />
-          <Route exact path="/shipping" element={<Shipping />} />
-          <Route exact path="/order/confirm" element={<ConfirmOrder />} />
-        </Route>
         <Route exact path="/password/forgot" element={<ForgotPassword />} />
         <Route
           exact
@@ -60,6 +65,74 @@ function App() {
           element={<ResetPassword />}
         />
         <Route exact path="/cart" element={<Cart />} />
+
+        {/*  Protected Routes */}
+        <Route
+          exact
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/me/update"
+          element={
+            <ProtectedRoute>
+              <UpdateProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/password/update"
+          element={
+            <ProtectedRoute>
+              <UpdatePassword />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/shipping"
+          element={
+            <ProtectedRoute>
+              <Shipping />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/order/confirm"
+          element={
+            <ProtectedRoute>
+              <ConfirmOrder />
+            </ProtectedRoute>
+          }
+        />
+        {stripeApiKey && (
+          <Route
+            path="/process/payment"
+            element={
+              <ProtectedRoute>
+                <Elements stripe={loadStripe(stripeApiKey)}>
+                  <Payment />
+                </Elements>
+              </ProtectedRoute>
+            }
+          />
+        )}
+        <Route
+          exact
+          path="/success"
+          element={
+            <ProtectedRoute>
+              <OrderSuccess />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <Footer />
     </Router>
