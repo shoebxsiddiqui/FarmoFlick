@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/data-grid": "^4.0.0-alpha.37",
     "@redux-devtools/extension": "^3.2.5",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
