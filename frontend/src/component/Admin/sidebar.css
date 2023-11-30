@@ -9,7 +9,10 @@
   padding: 0;
 }
 .sidebar > a > img {
-  width: 100%;
+  padding-top: 50px;
+  padding-left: 20px;
+  width: 80%;
+  height: 50%;
   transition: all 0.5s;
 }
 

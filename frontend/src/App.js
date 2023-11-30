@@ -29,6 +29,7 @@ import OrderDetails from "./component/Order/OrderDetails.js";
 import Dashboard from "./component/Admin/Dashboard.js";
 import ProductList from "./component/Admin/ProductList.js";
 import NewProduct from "./component/Admin/NewProduct.js";
+import UpdateProduct from "./component/Admin/UpdateProduct.js";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
@@ -225,6 +226,15 @@ function App() {
           element={
             <ProtectedRoute isAdmin={true}>
               <NewProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/admin/product/:id"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <UpdateProduct />
             </ProtectedRoute>
           }
         />

@@ -3,53 +3,53 @@ import { DataGrid } from "@material-ui/data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  // clearErrors,
+  clearErrors,
   getAdminProduct,
-  // deleteProduct,
+  deleteProduct,
 } from "../../actions/productAction";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAlert } from "react-alert";
 import { Button } from "@material-ui/core";
 import MetaData from "../layout/MetaData";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SideBar from "./Sidebar";
-// import { DELETE_PRODUCT_RESET } from "../../constants/productConstants";
+import { DELETE_PRODUCT_RESET } from "../../constants/productConstants";
 
 const ProductList = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const alert = useAlert();
 
-  const { products } = useSelector((state) => state.products);
+  const { error, products } = useSelector((state) => state.products);
 
-  // const { error: deleteError, isDeleted } = useSelector(
-  //   (state) => state.product
-  // );
+  const { error: deleteError, isDeleted } = useSelector(
+    (state) => state.product
+  );
 
   const deleteProductHandler = (id) => {
-    // dispatch(deleteProduct(id));
+    dispatch(deleteProduct(id));
   };
 
   useEffect(() => {
-    //   if (error) {
-    //     alert.error(error);
-    //     dispatch(clearErrors());
-    //   }
+    if (error) {
+      alert.error(error);
+      dispatch(clearErrors());
+    }
 
-    //   if (deleteError) {
-    //     alert.error(deleteError);
-    //     dispatch(clearErrors());
-    //   }
+    if (deleteError) {
+      alert.error(deleteError);
+      dispatch(clearErrors());
+    }
 
-    //   // if (isDeleted) {
-    //   //   alert.success("Product Deleted Successfully");
-    //   //   history.push("/admin/dashboard");
-    //   //   dispatch({ type: DELETE_PRODUCT_RESET });
-    //   // }
+    if (isDeleted) {
+      alert.success("Product Deleted Successfully");
+      navigate("/admin/dashboard");
+      dispatch({ type: DELETE_PRODUCT_RESET });
+    }
 
     dispatch(getAdminProduct());
-  }, [dispatch, alert /*error, deleteError*/]);
+  }, [dispatch, navigate, alert, error, deleteError, isDeleted]);
 
   const columns = [
     { field: "id", headerName: "Product ID", minWidth: 200, flex: 0.5 },
