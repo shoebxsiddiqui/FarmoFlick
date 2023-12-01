@@ -34,6 +34,7 @@ import OrderList from "./component/Admin/OrderList.js";
 import ProcessOrder from "./component/Admin/ProcessOrder.js";
 import UsersList from "./component/Admin/UsersList.js";
 import UpdateUser from "./component/Admin/UpdateUser.js";
+import ProductReviews from "./component/Admin/ProductReviews.js";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
@@ -275,6 +276,15 @@ function App() {
           element={
             <ProtectedRoute isAdmin={true}>
               <UpdateUser />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/admin/reviews"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <ProductReviews />
             </ProtectedRoute>
           }
         />
