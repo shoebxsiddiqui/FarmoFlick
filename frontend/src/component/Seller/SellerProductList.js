@@ -1,10 +1,10 @@
 import React, { Fragment, useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import "./productList.css";
+import "../Admin/productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
   clearErrors,
-  getAdminProduct,
+  getSellerProduct,
   deleteProduct,
 } from "../../actions/productAction";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import { Button } from "@material-ui/core";
 import MetaData from "../layout/MetaData";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import SideBar from "./Sidebar";
+import SideBar from "../Admin/Sidebar";
 import { DELETE_PRODUCT_RESET } from "../../constants/productConstants";
 
 const ProductList = ({ user }) => {
@@ -44,12 +44,12 @@ const ProductList = ({ user }) => {
 
     if (isDeleted) {
       alert.success("Product Deleted Successfully");
-      navigate("/admin/dashboard");
+      navigate("/seller/dashboard");
       dispatch({ type: DELETE_PRODUCT_RESET });
     }
 
-    dispatch(getAdminProduct());
-  }, [dispatch, navigate, alert, error, deleteError, isDeleted]);
+    dispatch(getSellerProduct(user._id));
+  }, [dispatch, navigate, alert, error, deleteError, isDeleted, user._id]);
 
   const columns = [
     { field: "id", headerName: "Product ID", minWidth: 200, flex: 0.5 },
@@ -86,7 +86,7 @@ const ProductList = ({ user }) => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/product/${params.getValue(params.id, "id")}`}>
+            <Link to={`/seller/product/${params.getValue(params.id, "id")}`}>
               <EditIcon />
             </Link>
 
@@ -117,10 +117,10 @@ const ProductList = ({ user }) => {
 
   return (
     <Fragment>
-      <MetaData title={`ALL PRODUCTS - Admin`} />
+      <MetaData title={`ALL PRODUCTS - Seller`} />
 
       <div className="dashboard">
-        <SideBar />
+        <SideBar user={user} />
         <div className="productListContainer">
           <h1 id="productListHeading">ALL PRODUCTS</h1>
 

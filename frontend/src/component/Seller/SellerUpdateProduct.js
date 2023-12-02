@@ -7,7 +7,7 @@ import DescriptionIcon from "@material-ui/icons/Description";
 import StorageIcon from "@material-ui/icons/Storage";
 import SpellcheckIcon from "@material-ui/icons/Spellcheck";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import SideBar from "./Sidebar";
+import SideBar from "../Admin/Sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import {
   clearErrors,
@@ -16,9 +16,9 @@ import {
 } from "../../actions/productAction";
 import { useNavigate, useParams } from "react-router-dom";
 import { UPDATE_PRODUCT_RESET } from "../../constants/productConstants";
-import "./newProduct.css";
+import "../Admin/newProduct.css";
 
-const UpdateProduct = ({ user }) => {
+const SellerUpdateProduct = ({ user }) => {
   const alert = useAlert();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -71,7 +71,7 @@ const UpdateProduct = ({ user }) => {
     }
     if (isUpdated) {
       alert.success("Product Updated Successfully");
-      navigate("/admin/dashboard");
+      navigate("/seller/dashboard");
       dispatch({ type: UPDATE_PRODUCT_RESET });
     }
   }, [dispatch, alert, error, updateError, isUpdated, product, id, navigate]);
@@ -112,7 +112,7 @@ const UpdateProduct = ({ user }) => {
     <>
       <MetaData title={"Update Product"} />
       <div className="dashboard">
-        <SideBar />
+        <SideBar user={user} />
         <div className="newProductContainer">
           <form
             className="createProductForm"
@@ -209,4 +209,4 @@ const UpdateProduct = ({ user }) => {
   );
 };
 
-export default UpdateProduct;
+export default SellerUpdateProduct;

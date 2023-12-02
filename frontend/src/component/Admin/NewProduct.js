@@ -14,7 +14,7 @@ import SideBar from "./Sidebar";
 import { NEW_PRODUCT_RESET } from "../../constants/productConstants";
 import { useNavigate } from "react-router-dom";
 
-const NewProduct = () => {
+const NewProduct = ({ user }) => {
   const dispatch = useDispatch();
   const alert = useAlert();
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ const NewProduct = () => {
     images.forEach((image) => {
       myForm.append("images", image);
     });
-    dispatch(createProduct(myForm));
+    dispatch(createProduct(myForm, user.role));
   };
 
   const createProductImagesChange = (e) => {

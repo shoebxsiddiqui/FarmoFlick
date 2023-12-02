@@ -83,18 +83,28 @@ export const getAdminProduct = () => async (dispatch) => {
 };
 
 // Create Product
-export const createProduct = (productData) => async (dispatch) => {
+export const createProduct = (productData, user) => async (dispatch) => {
   try {
     dispatch({ type: NEW_PRODUCT_REQUEST });
 
     const config = {
       headers: { "Content-Type": "multipart/form-data" },
     };
-    const { data } = await axios.post(
-      `/api/v1/admin/product/new`,
-      productData,
-      config
-    );
+
+    let data;
+    if (user === "admin") {
+      ({ data } = await axios.post(
+        `/api/v1/admin/product/new`,
+        productData,
+        config
+      ));
+    } else {
+      ({ data } = await axios.post(
+        `/api/v1/seller/product/new`,
+        productData,
+        config
+      ));
+    }
 
     dispatch({
       type: NEW_PRODUCT_SUCCESS,
@@ -109,7 +119,7 @@ export const createProduct = (productData) => async (dispatch) => {
 };
 
 // Update Product
-export const updateProduct = (id, productData) => async (dispatch) => {
+export const updateProduct = (id, productData, role) => async (dispatch) => {
   try {
     dispatch({ type: UPDATE_PRODUCT_REQUEST });
 
@@ -117,11 +127,20 @@ export const updateProduct = (id, productData) => async (dispatch) => {
       headers: { "Content-Type": "application/json" },
     };
 
-    const { data } = await axios.put(
-      `/api/v1/admin/product/${id}`,
-      productData,
-      config
-    );
+    let data;
+    if (role === "admin") {
+      ({ data } = await axios.put(
+        `/api/v1/admin/product/${id}`,
+        productData,
+        config
+      ));
+    } else {
+      ({ data } = await axios.put(
+        `/api/v1/seller/product/${id}`,
+        productData,
+        config
+      ));
+    }
 
     dispatch({
       type: UPDATE_PRODUCT_SUCCESS,
@@ -136,11 +155,16 @@ export const updateProduct = (id, productData) => async (dispatch) => {
 };
 
 // Delete Product
-export const deleteProduct = (id) => async (dispatch) => {
+export const deleteProduct = (id, role) => async (dispatch) => {
   try {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
 
-    const { data } = await axios.delete(`/api/v1/admin/product/${id}`);
+    let data;
+    if (role === "admin") {
+      ({ data } = await axios.delete(`/api/v1/admin/product/${id}`));
+    } else {
+      ({ data } = await axios.delete(`/api/v1/seller/product/${id}`));
+    }
 
     dispatch({
       type: DELETE_PRODUCT_SUCCESS,
@@ -234,6 +258,25 @@ export const deleteReviews = (reviewId, productId) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: DELETE_REVIEW_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// Get Seller's Products
+export const getSellerProduct = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: ADMIN_PRODUCT_REQUEST });
+
+    const { data } = await axios.get(`/api/v1/seller/products/${id}`);
+
+    dispatch({
+      type: ADMIN_PRODUCT_SUCCESS,
+      payload: data.products,
+    });
+  } catch (error) {
+    dispatch({
+      type: ADMIN_PRODUCT_FAIL,
       payload: error.response.data.message,
     });
   }

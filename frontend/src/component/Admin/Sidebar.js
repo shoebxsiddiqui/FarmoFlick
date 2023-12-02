@@ -12,30 +12,52 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import PeopleIcon from "@material-ui/icons/People";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 
-const Sidebar = () => {
+const Sidebar = ({ user }) => {
   return (
     <div className="sidebar">
       <Link to="/">
         <img src={logo} alt="Ecommerce" />
       </Link>
-      <Link to="/admin/dashboard">
-        <p>
-          <DashboardIcon /> Dashboard
-        </p>
-      </Link>
+      {user?.role === "admin" && (
+        <Link to="/admin/dashboard">
+          <p>
+            <DashboardIcon /> Dashboard
+          </p>
+        </Link>
+      )}
+      {user.role === "seller" && (
+        <Link to="/seller/dashboard">
+          <p>
+            <DashboardIcon /> Dashboard
+          </p>
+        </Link>
+      )}
       <Link>
         <TreeView
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ImportExportIcon />}
         >
           <TreeItem nodeId="1" label="Products">
-            <Link to="/admin/products">
-              <TreeItem nodeId="2" label="All" icon={<PostAddIcon />} />
-            </Link>
-
-            <Link to="/admin/product">
-              <TreeItem nodeId="3" label="Create" icon={<AddIcon />} />
-            </Link>
+            {user.role === "admin" && (
+              <Link to="/admin/products">
+                <TreeItem nodeId="2" label="All" icon={<PostAddIcon />} />
+              </Link>
+            )}
+            {user.role === "seller" && (
+              <Link to="/seller/products">
+                <TreeItem nodeId="2" label="All" icon={<PostAddIcon />} />
+              </Link>
+            )}
+            {user.role === "admin" && (
+              <Link to="/admin/product">
+                <TreeItem nodeId="3" label="Create" icon={<AddIcon />} />
+              </Link>
+            )}
+            {user.role === "seller" && (
+              <Link to="/seller/product">
+                <TreeItem nodeId="3" label="Create" icon={<AddIcon />} />
+              </Link>
+            )}
           </TreeItem>
         </TreeView>
       </Link>

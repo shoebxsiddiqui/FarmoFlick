@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
-import Sidebar from "./Sidebar.js";
-import "./dashboard.css";
+import Sidebar from "../Admin/Sidebar.js";
+import "../Admin/dashboard.css";
 import { Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { Doughnut, Line } from "react-chartjs-2";
 import { registerables, Chart } from "chart.js";
 import { useSelector, useDispatch } from "react-redux";
-import { getAdminProduct } from "../../actions/productAction";
-import { getAllOrders } from "../../actions/orderAction.js";
-import { getAllUsers } from "../../actions/userAction.js";
+import { getSellerProduct } from "../../actions/productAction";
+// import { getAllOrders } from "../../actions/orderAction.js";
+// import { getAllUsers } from "../../actions/userAction.js";
 import MetaData from "../layout/MetaData";
 
 const Dashboard = () => {
@@ -18,9 +18,9 @@ const Dashboard = () => {
 
   const { products } = useSelector((state) => state.products);
 
-  const { orders } = useSelector((state) => state.allOrders);
+  //   const { orders } = useSelector((state) => state.allOrders);
 
-  const { users } = useSelector((state) => state.allUsers);
+  //   const { users } = useSelector((state) => state.allUsers);
 
   let outOfStock = 0;
 
@@ -32,16 +32,16 @@ const Dashboard = () => {
     });
 
   useEffect(() => {
-    dispatch(getAdminProduct());
-    dispatch(getAllOrders());
-    dispatch(getAllUsers());
-  }, [dispatch]);
+    dispatch(getSellerProduct(user._id));
+    //     dispatch(getAllOrders());
+    //     dispatch(getAllUsers());
+  }, [dispatch, user._id]);
 
   let totalAmount = 0;
-  orders &&
-    orders.forEach((item) => {
-      totalAmount += item.totalPrice;
-    });
+  //   orders &&
+  //     orders.forEach((item) => {
+  //       totalAmount += item.totalPrice;
+  //     });
 
   Chart.register(...registerables);
   const lineState = {
@@ -81,17 +81,17 @@ const Dashboard = () => {
             </p>
           </div>
           <div className="dashboardSummaryBox2">
-            <Link to="/admin/products">
+            <Link to="/seller/products">
               <p>Product</p>
               <p>{products && products.length}</p>
             </Link>
             <Link to="/admin/orders">
               <p>Orders</p>
-              <p>{orders && orders.length}</p>
+              <p>{/*orders && orders.length*/ 5}</p>
             </Link>
             <Link to="/admin/users">
               <p>Users</p>
-              <p>{users && users.length}</p>
+              <p>{/*users && users.length*/ 6}</p>
             </Link>
           </div>
         </div>

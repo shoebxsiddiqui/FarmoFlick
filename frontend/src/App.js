@@ -14,7 +14,8 @@ import { loadUser } from "./actions/userAction.js";
 import UserOptions from "./component/layout/Header/UserOptions.js";
 import { useSelector } from "react-redux";
 import Profile from "./component/User/Profile.js";
-import ProtectedRoute from "./component/Route/ProtectedRoute.js";
+import AdminRoute from "./component/Route/AdminRoute.js";
+import SellerRoute from "./component/Route/SellerRoute.js";
 import UpdateProfile from "./component/User/UpdateProfile.js";
 import UpdatePassword from "./component/User/UpdatePassword.js";
 import ForgotPassword from "./component/User/ForgotPassword.js";
@@ -38,6 +39,10 @@ import ProductReviews from "./component/Admin/ProductReviews.js";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
+import SellerProductList from "./component/Seller/SellerProductList.js";
+import SellerDashboard from "./component/Seller/SellerDashboard.js";
+import NewSellerProduct from "./component/Seller/NewSellerProduct.js";
+import SellerUpdateProduct from "./component/Seller/SellerUpdateProduct.js";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -82,56 +87,56 @@ function App() {
           exact
           path="/account"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <Profile />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/me/update"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <UpdateProfile />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/password/update"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <UpdatePassword />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/shipping"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <Shipping />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/order/confirm"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <ConfirmOrder />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         {stripeApiKey && (
           <Route
             path="/process/payment"
             element={
-              <ProtectedRoute>
+              <AdminRoute>
                 <Elements stripe={loadStripe(stripeApiKey)}>
                   <Payment />
                 </Elements>
-              </ProtectedRoute>
+              </AdminRoute>
             }
           />
         )}
@@ -139,153 +144,144 @@ function App() {
           exact
           path="/success"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <OrderSuccess />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/order/:id"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <OrderDetails />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/orders"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <MyOrders />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          exact
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <MyOrders />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          exact
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <MyOrders />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          exact
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <MyOrders />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          exact
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <MyOrders />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          exact
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <MyOrders />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/admin/dashboard"
           element={
-            <ProtectedRoute isAdmin={true}>
+            <AdminRoute isAdmin={true}>
               <Dashboard />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/admin/products"
           element={
-            <ProtectedRoute isAdmin={true}>
-              <ProductList />
-            </ProtectedRoute>
+            <AdminRoute isAdmin={true}>
+              <ProductList user={user} />
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/admin/product"
           element={
-            <ProtectedRoute isAdmin={true}>
-              <NewProduct />
-            </ProtectedRoute>
+            <AdminRoute isAdmin={true}>
+              <NewProduct user={user} />
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/admin/product/:id"
           element={
-            <ProtectedRoute isAdmin={true}>
-              <UpdateProduct />
-            </ProtectedRoute>
+            <AdminRoute isAdmin={true}>
+              <UpdateProduct user={user} />
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/admin/orders"
           element={
-            <ProtectedRoute isAdmin={true}>
+            <AdminRoute isAdmin={true}>
               <OrderList />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/admin/order/:id"
           element={
-            <ProtectedRoute isAdmin={true}>
+            <AdminRoute isAdmin={true}>
               <ProcessOrder />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/admin/users"
           element={
-            <ProtectedRoute isAdmin={true}>
+            <AdminRoute isAdmin={true}>
               <UsersList />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/admin/user/:id"
           element={
-            <ProtectedRoute isAdmin={true}>
+            <AdminRoute isAdmin={true}>
               <UpdateUser />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route
           exact
           path="/admin/reviews"
           element={
-            <ProtectedRoute isAdmin={true}>
+            <AdminRoute isAdmin={true}>
               <ProductReviews />
-            </ProtectedRoute>
+            </AdminRoute>
+          }
+        />
+        <Route
+          exact
+          path="/seller/dashboard"
+          element={
+            <SellerRoute isSeller={true}>
+              <SellerDashboard user={user} />
+            </SellerRoute>
+          }
+        />
+        <Route
+          exact
+          path="/seller/products"
+          element={
+            <SellerRoute isSeller={true}>
+              <SellerProductList user={user} />
+            </SellerRoute>
+          }
+        />
+        <Route
+          exact
+          path="/seller/product"
+          element={
+            <SellerRoute isSeller={true}>
+              <NewSellerProduct user={user} />
+            </SellerRoute>
+          }
+        />
+        <Route
+          exact
+          path="/seller/product/:id"
+          element={
+            <SellerRoute isSeller={true}>
+              <SellerUpdateProduct user={user} />
+            </SellerRoute>
           }
         />
       </Routes>
