@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import MetaData from "../layout/MetaData";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Typography } from "@material-ui/core";
-import SideBar from "./Sidebar";
+import SideBar from "../Admin/Sidebar";
 import {
   getOrderDetails,
   clearErrors,
@@ -14,7 +14,7 @@ import { useAlert } from "react-alert";
 import AccountTreeIcon from "@material-ui/icons/AccountTree";
 import { Button } from "@material-ui/core";
 import { UPDATE_ORDER_RESET } from "../../constants/orderConstants";
-import "./processOrder.css";
+import "../Admin/processOrder.css";
 
 const ProcessOrder = ({ user }) => {
   const { id } = useParams();
@@ -34,7 +34,7 @@ const ProcessOrder = ({ user }) => {
 
     myForm.set("status", status);
 
-    dispatch(updateOrder(id, myForm, user.role));
+    dispatch(updateOrder(id, myForm, user._id));
   };
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const ProcessOrder = ({ user }) => {
     if (isUpdated) {
       alert.success("Order Updated Successfully");
       dispatch({ type: UPDATE_ORDER_RESET });
-      navigate("/admin/orders");
+      navigate("/seller/orders");
     }
 
     dispatch(getOrderDetails(id));

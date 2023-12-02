@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import "./productList.css";
+import "../Admin/productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useAlert } from "react-alert";
@@ -8,10 +8,10 @@ import { Button } from "@material-ui/core";
 import MetaData from "../layout/MetaData";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import SideBar from "./Sidebar";
+import SideBar from "../Admin/Sidebar";
 import {
   deleteOrder,
-  getAllOrders,
+  getSellerOrders,
   clearErrors,
 } from "../../actions/orderAction";
 import { DELETE_ORDER_RESET } from "../../constants/orderConstants";
@@ -42,12 +42,12 @@ const OrderList = ({ user }) => {
 
     if (isDeleted) {
       alert.success("Order Deleted Successfully");
-      navigate("/admin/orders");
+      navigate("/seller/orders");
       dispatch({ type: DELETE_ORDER_RESET });
     }
 
-    dispatch(getAllOrders());
-  }, [dispatch, alert, error, deleteError, navigate, isDeleted]);
+    dispatch(getSellerOrders(user._id));
+  }, [dispatch, alert, error, deleteError, navigate, isDeleted, user._id]);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },
@@ -89,7 +89,7 @@ const OrderList = ({ user }) => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/order/${params.getValue(params.id, "id")}`}>
+            <Link to={`/seller/order/${params.getValue(params.id, "id")}`}>
               <EditIcon />
             </Link>
 
@@ -120,7 +120,7 @@ const OrderList = ({ user }) => {
 
   return (
     <Fragment>
-      <MetaData title={`ALL ORDERS - Admin`} />
+      <MetaData title={`ALL ORDERS - Seller`} />
 
       <div className="dashboard">
         <SideBar user={user} />

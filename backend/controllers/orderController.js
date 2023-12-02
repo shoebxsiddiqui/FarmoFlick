@@ -128,3 +128,19 @@ exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
     success: true,
   });
 });
+
+// get All Orders -- Seller
+exports.getSellerOrders = catchAsyncErrors(async (req, res, next) => {
+  const orders = await Order.find({ "orderItems.user": req.params.id });
+
+  let totalAmount = 0;
+  orders.forEach((orders) => {
+    totalAmount += orders.totalPrice;
+  });
+
+  res.status(200).json({
+    success: true,
+    totalAmount,
+    orders,
+  });
+});

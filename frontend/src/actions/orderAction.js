@@ -76,7 +76,7 @@ export const getAllOrders = () => async (dispatch) => {
 };
 
 // Update Order
-export const updateOrder = (id, order) => async (dispatch) => {
+export const updateOrder = (id, order, user) => async (dispatch) => {
   try {
     dispatch({ type: UPDATE_ORDER_REQUEST });
 
@@ -85,11 +85,12 @@ export const updateOrder = (id, order) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
-    const { data } = await axios.put(
-      `/api/v1/admin/order/${id}`,
-      order,
-      config
-    );
+    let data;
+    if (user === "admin") {
+      ({ data } = await axios.put(`/api/v1/admin/order/${id}`, order, config));
+    } else {
+      ({ data } = await axios.put(`/api/v1/seller/order/${id}`, order, config));
+    }
 
     dispatch({ type: UPDATE_ORDER_SUCCESS, payload: data.success });
   } catch (error) {
@@ -101,11 +102,16 @@ export const updateOrder = (id, order) => async (dispatch) => {
 };
 
 // Delete Order
-export const deleteOrder = (id) => async (dispatch) => {
+export const deleteOrder = (id, user) => async (dispatch) => {
   try {
     dispatch({ type: DELETE_ORDER_REQUEST });
 
-    const { data } = await axios.delete(`/api/v1/admin/order/${id}`);
+    let data;
+    if (user === "admin") {
+      ({ data } = await axios.delete(`/api/v1/admin/order/${id}`));
+    } else {
+      ({ data } = await axios.delete(`/api/v1/seller/order/${id}`));
+    }
 
     dispatch({ type: DELETE_ORDER_SUCCESS, payload: data.success });
   } catch (error) {
@@ -127,6 +133,22 @@ export const getOrderDetails = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: ORDER_DETAILS_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// Get All Orders (Seller)
+export const getSellerOrders = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: ALL_ORDERS_REQUEST });
+
+    const { data } = await axios.get(`/api/v1/seller/orders/${id}`);
+
+    dispatch({ type: ALL_ORDERS_SUCCESS, payload: data.orders });
+  } catch (error) {
+    dispatch({
+      type: ALL_ORDERS_FAIL,
       payload: error.response.data.message,
     });
   }

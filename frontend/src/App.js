@@ -43,6 +43,8 @@ import SellerProductList from "./component/Seller/SellerProductList.js";
 import SellerDashboard from "./component/Seller/SellerDashboard.js";
 import NewSellerProduct from "./component/Seller/NewSellerProduct.js";
 import SellerUpdateProduct from "./component/Seller/SellerUpdateProduct.js";
+import SellerOrderList from "./component/Seller/SellerOrderList.js";
+import SellerProcessOrder from "./component/Seller/SellerProcessOrder.js";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -208,7 +210,7 @@ function App() {
           path="/admin/orders"
           element={
             <AdminRoute isAdmin={true}>
-              <OrderList />
+              <OrderList user={user} />
             </AdminRoute>
           }
         />
@@ -217,7 +219,7 @@ function App() {
           path="/admin/order/:id"
           element={
             <AdminRoute isAdmin={true}>
-              <ProcessOrder />
+              <ProcessOrder user={user} />
             </AdminRoute>
           }
         />
@@ -226,7 +228,7 @@ function App() {
           path="/admin/users"
           element={
             <AdminRoute isAdmin={true}>
-              <UsersList />
+              <UsersList user={user} />
             </AdminRoute>
           }
         />
@@ -244,7 +246,7 @@ function App() {
           path="/admin/reviews"
           element={
             <AdminRoute isAdmin={true}>
-              <ProductReviews />
+              <ProductReviews user={user} />
             </AdminRoute>
           }
         />
@@ -282,6 +284,24 @@ function App() {
             <SellerRoute isSeller={true}>
               <SellerUpdateProduct user={user} />
             </SellerRoute>
+          }
+        />
+        <Route
+          exact
+          path="/seller/orders"
+          element={
+            <AdminRoute isSeller={true}>
+              <SellerOrderList user={user} />
+            </AdminRoute>
+          }
+        />
+        <Route
+          exact
+          path="/seller/order/:id"
+          element={
+            <AdminRoute isSeller={true}>
+              <SellerProcessOrder user={user} />
+            </AdminRoute>
           }
         />
       </Routes>

@@ -112,7 +112,7 @@ const UpdateProduct = ({ user }) => {
     <>
       <MetaData title={"Update Product"} />
       <div className="dashboard">
-        <SideBar />
+        <SideBar user={user} />
         <div className="newProductContainer">
           <form
             className="createProductForm"

@@ -18,7 +18,7 @@ const Sidebar = ({ user }) => {
       <Link to="/">
         <img src={logo} alt="Ecommerce" />
       </Link>
-      {user?.role === "admin" && (
+      {user.role === "admin" && (
         <Link to="/admin/dashboard">
           <p>
             <DashboardIcon /> Dashboard
@@ -61,23 +61,37 @@ const Sidebar = ({ user }) => {
           </TreeItem>
         </TreeView>
       </Link>
-      <Link to="/admin/orders">
-        <p>
-          <ListAltIcon />
-          Orders
-        </p>
-      </Link>
-      <Link to="/admin/users">
-        <p>
-          <PeopleIcon /> Users
-        </p>
-      </Link>
-      <Link to="/admin/reviews">
-        <p>
-          <RateReviewIcon />
-          Reviews
-        </p>
-      </Link>
+      {user.role === "admin" && (
+        <Link to="/admin/orders">
+          <p>
+            <ListAltIcon />
+            Orders
+          </p>
+        </Link>
+      )}
+      {user.role === "seller" && (
+        <Link to="/seller/orders">
+          <p>
+            <ListAltIcon />
+            Orders
+          </p>
+        </Link>
+      )}
+      {user.role === "admin" && (
+        <Link to="/admin/users">
+          <p>
+            <PeopleIcon /> Users
+          </p>
+        </Link>
+      )}
+      {user.role === "admin" && (
+        <Link to="/admin/reviews">
+          <p>
+            <RateReviewIcon />
+            Reviews
+          </p>
+        </Link>
+      )}
     </div>
   );
 };

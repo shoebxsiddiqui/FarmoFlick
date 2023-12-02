@@ -15,7 +15,6 @@ const Cart = () => {
 
   const increaseQuantity = (id, quantity, stock) => {
     const newQty = quantity + 1;
-    console.log(stock + " " + quantity);
     if (stock <= quantity) {
       return;
     }

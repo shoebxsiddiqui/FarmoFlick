@@ -16,7 +16,7 @@ import SideBar from "./Sidebar";
 import { DELETE_REVIEW_RESET } from "../../constants/productConstants";
 import { useNavigate } from "react-router-dom";
 
-const ProductReviews = ({ history }) => {
+const ProductReviews = ({ user }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const alert = useAlert();
@@ -132,7 +132,7 @@ const ProductReviews = ({ history }) => {
       <MetaData title={`ALL REVIEWS - Admin`} />
 
       <div className="dashboard">
-        <SideBar />
+        <SideBar user={user} />
         <div className="productReviewsContainer">
           <form
             className="productReviewsForm"

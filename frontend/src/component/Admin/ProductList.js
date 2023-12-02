@@ -120,7 +120,7 @@ const ProductList = ({ user }) => {
       <MetaData title={`ALL PRODUCTS - Admin`} />
 
       <div className="dashboard">
-        <SideBar />
+        <SideBar user={user} />
         <div className="productListContainer">
           <h1 id="productListHeading">ALL PRODUCTS</h1>
 

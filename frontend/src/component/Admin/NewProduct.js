@@ -89,7 +89,7 @@ const NewProduct = ({ user }) => {
     <Fragment>
       <MetaData title="Create Product" />
       <div className="dashboard">
-        <SideBar />
+        <SideBar user={user} />
         <div className="newProductContainer">
           <form
             className="createProductForm"

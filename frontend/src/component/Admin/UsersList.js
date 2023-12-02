@@ -12,7 +12,7 @@ import SideBar from "./Sidebar";
 import { getAllUsers, clearErrors, deleteUser } from "../../actions/userAction";
 import { DELETE_USER_RESET } from "../../constants/userConstants";
 
-const UsersList = () => {
+const UsersList = ({ user }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const alert = useAlert();
@@ -122,7 +122,7 @@ const UsersList = () => {
       <MetaData title={`ALL USERS - Admin`} />
 
       <div className="dashboard">
-        <SideBar />
+        <SideBar user={user} />
         <div className="productListContainer">
           <h1 id="productListHeading">ALL USERS</h1>
 

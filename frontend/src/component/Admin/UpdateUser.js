@@ -75,7 +75,7 @@ const UpdateUser = () => {
     <Fragment>
       <MetaData title="Update User" />
       <div className="dashboard">
-        <SideBar />
+        <SideBar user={user} />
         <div className="newProductContainer">
           {loading ? (
             <Loader />
