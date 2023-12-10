@@ -26,15 +26,15 @@ const ProcessOrder = ({ user }) => {
   const { error: updateError, isUpdated } = useSelector((state) => state.order);
 
   const [status, setStatus] = useState("");
-
   const updateOrderSubmitHandler = (e) => {
     e.preventDefault();
 
     const myForm = new FormData();
 
     myForm.set("status", status);
+    myForm.set("user", user._id);
 
-    dispatch(updateOrder(id, myForm, user._id));
+    dispatch(updateOrder(id, myForm, user.role));
   };
 
   useEffect(() => {
@@ -55,6 +55,23 @@ const ProcessOrder = ({ user }) => {
     dispatch(getOrderDetails(id));
   }, [dispatch, alert, error, id, isUpdated, updateError, navigate]);
 
+  let totalAmount = 0;
+  order &&
+    order.orderItems &&
+    order.orderItems.forEach((item) => {
+      if (item.user === user._id) {
+        totalAmount += item.price * item.quantity;
+      }
+    });
+  const orderStatus = () => {
+    return order &&
+      order.orderItems &&
+      order.orderItems.some((item) => {
+        return item.user === user._id && item.status === "Shipped";
+      })
+      ? "Shipped"
+      : "Processing";
+  };
   return (
     <Fragment>
       <MetaData title="Process Order" />
@@ -67,7 +84,7 @@ const ProcessOrder = ({ user }) => {
             <div
               className="confirmOrderPage"
               style={{
-                display: order.orderStatus === "Delivered" ? "block" : "grid",
+                display: orderStatus() !== "Processing" ? "block" : "grid",
               }}
             >
               <div>
@@ -113,7 +130,7 @@ const ProcessOrder = ({ user }) => {
 
                     <div>
                       <p>Amount:</p>
-                      <span>{order.totalPrice && order.totalPrice}</span>
+                      <span>{totalAmount}</span>
                     </div>
                   </div>
 
@@ -122,39 +139,44 @@ const ProcessOrder = ({ user }) => {
                     <div>
                       <p
                         className={
-                          order.orderStatus && order.orderStatus === "Delivered"
+                          orderStatus() !== "Processing"
                             ? "greenColor"
                             : "redColor"
                         }
                       >
-                        {order.orderStatus && order.orderStatus}
+                        {orderStatus()}
                       </p>
                     </div>
                   </div>
                 </div>
                 <div className="confirmCartItems">
-                  <Typography>Your Cart Items:</Typography>
-                  <div className="confirmCartItemsContainer">
+                  <Typography>Order Items:</Typography>
+                  <div className="confirmOrderContainer">
                     {order.orderItems &&
-                      order.orderItems.map((item) => (
-                        <div key={item.product}>
-                          <img src={item.image} alt="Product" />
-                          <Link to={`/product/${item.product}`}>
-                            {item.name}
-                          </Link>{" "}
-                          <span>
-                            {item.quantity} X ₹{item.price} ={" "}
-                            <b>₹{item.price * item.quantity}</b>
-                          </span>
-                        </div>
-                      ))}
+                      order.orderItems.map(
+                        (item) =>
+                          item.user === user._id && (
+                            <div key={item.product}>
+                              <img src={item.image} alt="Product" />
+                              <div>
+                                <Link to={`/product/${item.product}`}>
+                                  {item.name}
+                                </Link>
+                              </div>
+                              <span>
+                                {item.quantity} X ₹{item.price} ={" "}
+                                <b>₹{item.price * item.quantity}</b>
+                              </span>
+                            </div>
+                          )
+                      )}
                   </div>
                 </div>
               </div>
               {/*  */}
               <div
                 style={{
-                  display: order.orderStatus === "Delivered" ? "none" : "block",
+                  display: orderStatus() !== "Processing" ? "none" : "block",
                 }}
               >
                 <form
@@ -167,13 +189,10 @@ const ProcessOrder = ({ user }) => {
                     <AccountTreeIcon />
                     <select onChange={(e) => setStatus(e.target.value)}>
                       <option value="">Choose Category</option>
-                      {order.orderStatus === "Processing" && (
-                        <option value="Shipped">Shipped</option>
-                      )}
-
-                      {order.orderStatus === "Shipped" && (
-                        <option value="Delivered">Delivered</option>
-                      )}
+                      {user.role === "seller" &&
+                        orderStatus() === "Processing" && (
+                          <option value="Shipped">Shipped</option>
+                        )}
                     </select>
                   </div>
 

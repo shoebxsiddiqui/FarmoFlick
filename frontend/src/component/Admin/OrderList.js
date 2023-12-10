@@ -46,8 +46,8 @@ const OrderList = ({ user }) => {
       dispatch({ type: DELETE_ORDER_RESET });
     }
 
-    dispatch(getAllOrders());
-  }, [dispatch, alert, error, deleteError, navigate, isDeleted]);
+    dispatch(getAllOrders({ role: user.role }));
+  }, [dispatch, alert, error, deleteError, navigate, isDeleted, user.role]);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },

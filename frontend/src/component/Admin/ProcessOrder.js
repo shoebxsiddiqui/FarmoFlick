@@ -24,7 +24,6 @@ const ProcessOrder = ({ user }) => {
 
   const { order, error, loading } = useSelector((state) => state.orderDetails);
   const { error: updateError, isUpdated } = useSelector((state) => state.order);
-
   const [status, setStatus] = useState("");
 
   const updateOrderSubmitHandler = (e) => {
@@ -67,7 +66,12 @@ const ProcessOrder = ({ user }) => {
             <div
               className="confirmOrderPage"
               style={{
-                display: order.orderStatus === "Delivered" ? "block" : "grid",
+                display:
+                  (user.role === "seller" &&
+                    order.orderStatus !== "Processing") ||
+                  (user.role === "admin" && order.orderStatus !== "Shipped")
+                    ? "block"
+                    : "grid",
               }}
             >
               <div>
@@ -134,14 +138,25 @@ const ProcessOrder = ({ user }) => {
                 </div>
                 <div className="confirmCartItems">
                   <Typography>Your Cart Items:</Typography>
-                  <div className="confirmCartItemsContainer">
+                  <div className="confirmOrderContainer">
                     {order.orderItems &&
                       order.orderItems.map((item) => (
                         <div key={item.product}>
                           <img src={item.image} alt="Product" />
-                          <Link to={`/product/${item.product}`}>
-                            {item.name}
-                          </Link>{" "}
+                          <div>
+                            <Link to={`/product/${item.product}`}>
+                              {item.name}
+                            </Link>
+                          </div>
+                          <div
+                            className={
+                              item.status && item.status !== "Processing"
+                                ? "greenColor"
+                                : "redColor"
+                            }
+                          >
+                            {item.status}
+                          </div>
                           <span>
                             {item.quantity} X ₹{item.price} ={" "}
                             <b>₹{item.price * item.quantity}</b>
@@ -151,43 +166,49 @@ const ProcessOrder = ({ user }) => {
                   </div>
                 </div>
               </div>
-              {/*  */}
-              <div
-                style={{
-                  display: order.orderStatus === "Delivered" ? "none" : "block",
-                }}
-              >
-                <form
-                  className="updateOrderForm"
-                  onSubmit={updateOrderSubmitHandler}
+              {(user.role === "seller" && order.orderStatus !== "Processing") ||
+              (user.role === "admin" && order.orderStatus !== "Shipped") ? (
+                <div></div>
+              ) : (
+                <div
+                  style={{
+                    display:
+                      (user.role === "seller" &&
+                        order.orderStatus !== "Processing") ||
+                      (user.role === "admin" && order.orderStatus !== "Shipped")
+                        ? "block"
+                        : "grid",
+                  }}
                 >
-                  <h1>Process Order</h1>
-
-                  <div>
-                    <AccountTreeIcon />
-                    <select onChange={(e) => setStatus(e.target.value)}>
-                      <option value="">Choose Category</option>
-                      {order.orderStatus === "Processing" && (
-                        <option value="Shipped">Shipped</option>
-                      )}
-
-                      {order.orderStatus === "Shipped" && (
-                        <option value="Delivered">Delivered</option>
-                      )}
-                    </select>
-                  </div>
-
-                  <Button
-                    id="createProductBtn"
-                    type="submit"
-                    disabled={
-                      loading ? true : false || status === "" ? true : false
-                    }
+                  <form
+                    className="updateOrderForm"
+                    onSubmit={updateOrderSubmitHandler}
                   >
-                    Process
-                  </Button>
-                </form>
-              </div>
+                    <h1>Process Order</h1>
+
+                    <div>
+                      <AccountTreeIcon />
+                      <select onChange={(e) => setStatus(e.target.value)}>
+                        <option value="">Choose Category</option>
+                        {user.role === "admin" &&
+                          order.orderStatus === "Shipped" && (
+                            <option value="Delivered">Delivered</option>
+                          )}
+                      </select>
+                    </div>
+
+                    <Button
+                      id="createProductBtn"
+                      type="submit"
+                      disabled={
+                        loading ? true : false || status === "" ? true : false
+                      }
+                    >
+                      Process
+                    </Button>
+                  </form>
+                </div>
+              )}
             </div>
           )}
         </div>

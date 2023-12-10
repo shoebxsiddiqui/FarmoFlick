@@ -27,6 +27,27 @@
   color: rgba(0, 0, 0, 0.623);
 }
 
+.confirmOrderContainer > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 2fr;
+  font: 400 1vmax "Roboto";
+  align-items: center;
+  margin: 2vmax 0;
+}
+
+.confirmOrderContainer > div > div > a {
+  color: #575757;
+  text-decoration: none;
+}
+
+.confirmOrderContainer > div > img {
+  height: 50px;
+}
+
+.confirmOrderContainer > div > span {
+  text-align: right;
+}
+
 @media screen and (max-width: 600px) {
   .updateOrderForm {
     padding: 5vmax;

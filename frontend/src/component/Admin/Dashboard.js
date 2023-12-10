@@ -33,9 +33,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(getAdminProduct());
-    dispatch(getAllOrders());
+    dispatch(getAllOrders({ role: user.role }));
     dispatch(getAllUsers());
-  }, [dispatch]);
+  }, [dispatch, user.role]);
 
   let totalAmount = 0;
   orders &&

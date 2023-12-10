@@ -82,6 +82,7 @@ export const myOrdersReducer = (state = { orders: [] }, action) => {
 };
 
 export const allOrdersReducer = (state = { orders: [] }, action) => {
+  // console.log(action);
   switch (action.type) {
     case ALL_ORDERS_REQUEST:
       return {

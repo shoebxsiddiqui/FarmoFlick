@@ -60,20 +60,26 @@ export const myOrders = () => async (dispatch) => {
 };
 
 // Get All Orders (Admin)
-export const getAllOrders = () => async (dispatch) => {
-  try {
-    dispatch({ type: ALL_ORDERS_REQUEST });
+export const getAllOrders =
+  ({ role }) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: ALL_ORDERS_REQUEST });
 
-    const { data } = await axios.get("/api/v1/admin/orders");
-
-    dispatch({ type: ALL_ORDERS_SUCCESS, payload: data.orders });
-  } catch (error) {
-    dispatch({
-      type: ALL_ORDERS_FAIL,
-      payload: error.response.data.message,
-    });
-  }
-};
+      let data;
+      if (role === "admin") {
+        ({ data } = await axios.get("/api/v1/admin/orders"));
+      } else {
+        ({ data } = await axios.get("/api/v1/seller/orders"));
+      }
+      dispatch({ type: ALL_ORDERS_SUCCESS, payload: data.orders });
+    } catch (error) {
+      dispatch({
+        type: ALL_ORDERS_FAIL,
+        payload: error.response.data.message,
+      });
+    }
+  };
 
 // Update Order
 export const updateOrder = (id, order, user) => async (dispatch) => {
@@ -85,6 +91,7 @@ export const updateOrder = (id, order, user) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
+    console.log(user);
     let data;
     if (user === "admin") {
       ({ data } = await axios.put(`/api/v1/admin/order/${id}`, order, config));

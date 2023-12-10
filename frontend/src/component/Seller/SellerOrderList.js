@@ -11,7 +11,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import SideBar from "../Admin/Sidebar";
 import {
   deleteOrder,
-  getSellerOrders,
+  getAllOrders,
   clearErrors,
 } from "../../actions/orderAction";
 import { DELETE_ORDER_RESET } from "../../constants/orderConstants";
@@ -24,7 +24,6 @@ const OrderList = ({ user }) => {
   const { error, orders } = useSelector((state) => state.allOrders);
 
   const { error: deleteError, isDeleted } = useSelector((state) => state.order);
-
   const deleteOrderHandler = (id) => {
     dispatch(deleteOrder(id, user.role));
   };
@@ -46,7 +45,7 @@ const OrderList = ({ user }) => {
       dispatch({ type: DELETE_ORDER_RESET });
     }
 
-    dispatch(getSellerOrders(user._id));
+    dispatch(getAllOrders(user._id));
   }, [dispatch, alert, error, deleteError, navigate, isDeleted, user._id]);
 
   const columns = [
@@ -58,7 +57,7 @@ const OrderList = ({ user }) => {
       minWidth: 150,
       flex: 0.5,
       cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
+        return params.getValue(params.id, "status") !== "Processing"
           ? "greenColor"
           : "redColor";
       },
@@ -107,16 +106,24 @@ const OrderList = ({ user }) => {
   ];
 
   const rows = [];
-
-  orders &&
-    orders.forEach((item) => {
-      rows.push({
-        id: item._id,
-        itemsQty: item.orderItems.length,
-        amount: item.totalPrice,
-        status: item.orderStatus,
-      });
+  let totalAmount = 0;
+  if (orders && orders.length > 0) {
+    orders.forEach((order) => {
+      if (order.orderItems) {
+        order.orderItems.forEach((item) => {
+          if (item.user === user._id) {
+            totalAmount += item.price * item.quantity;
+            rows.push({
+              id: order._id,
+              itemsQty: item.quantity,
+              amount: totalAmount,
+              status: item.status,
+            });
+          }
+        });
+      }
     });
+  }
 
   return (
     <Fragment>

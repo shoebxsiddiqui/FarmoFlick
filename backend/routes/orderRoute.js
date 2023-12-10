@@ -8,6 +8,7 @@ const {
   updateOrder,
   deleteOrder,
   getSellerOrders,
+  updateSellerOrder,
 } = require("../controllers/orderController");
 const router = express.Router();
 
@@ -21,8 +22,8 @@ router
   .route("/admin/orders")
   .get(isAuthenticatedUser, authorizedRoles("admin"), getAllOrders);
 router
-  .route("/seller/orders/:id")
-  .get(isAuthenticatedUser, authorizedRoles("seller"), getSellerOrders);
+  .route("/seller/orders")
+  .get(isAuthenticatedUser, authorizedRoles("seller"), getAllOrders);
 
 router
   .route("/admin/order/:id")
@@ -30,7 +31,7 @@ router
   .delete(isAuthenticatedUser, authorizedRoles("admin"), deleteOrder);
 router
   .route("/seller/order/:id")
-  .put(isAuthenticatedUser, authorizedRoles("seller"), updateOrder)
+  .put(isAuthenticatedUser, authorizedRoles("seller"), updateSellerOrder)
   .delete(isAuthenticatedUser, authorizedRoles("seller"), deleteOrder);
 
 module.exports = router;

@@ -7,7 +7,7 @@ import { Doughnut, Line } from "react-chartjs-2";
 import { registerables, Chart } from "chart.js";
 import { useSelector, useDispatch } from "react-redux";
 import { getSellerProduct } from "../../actions/productAction";
-import { getSellerOrders } from "../../actions/orderAction.js";
+import { getAllOrders } from "../../actions/orderAction.js";
 import MetaData from "../layout/MetaData";
 
 const Dashboard = () => {
@@ -17,7 +17,9 @@ const Dashboard = () => {
 
   const { products } = useSelector((state) => state.products);
 
-  const { orders } = useSelector((state) => state.allOrders);
+  const { orders } = useSelector((state) => {
+    return state.allOrders;
+  });
 
   let outOfStock = 0;
 
@@ -30,13 +32,21 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(getSellerProduct(user._id));
-    dispatch(getSellerOrders(user._id));
+    dispatch(getAllOrders(user._id));
   }, [dispatch, user._id]);
 
   let totalAmount = 0;
+  let totalLength = 0;
   orders &&
-    orders.forEach((item) => {
-      totalAmount += item.totalPrice;
+    orders.forEach((order) => {
+      totalLength = totalLength + 1;
+      if (order.orderItems) {
+        order.orderItems.forEach((item) => {
+          if (item.user === user._id) {
+            totalAmount += item.price * item.quantity;
+          }
+        });
+      }
     });
 
   Chart.register(...registerables);
@@ -83,7 +93,7 @@ const Dashboard = () => {
             </Link>
             <Link to="/seller/orders">
               <p>Orders</p>
-              <p>{orders && orders.length}</p>
+              <p>{totalLength}</p>
             </Link>
           </div>
         </div>
