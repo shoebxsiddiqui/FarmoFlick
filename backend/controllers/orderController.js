@@ -1,7 +1,9 @@
 const Order = require("../models/orderModel");
+const User = require("../models/userModel");
 const Product = require("../models/productModel");
 const ErrorHandler = require("../utils/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const sendSms = require("../utils/sendSms");
 
 // Create new Order
 exports.newOrder = catchAsyncErrors(async (req, res, next) => {
@@ -80,6 +82,7 @@ exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
 exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
 
+  const user = await User.findById(order.user);
   if (!order) {
     return next(new ErrorHandler("Order not found with this id", 404));
   }
@@ -91,12 +94,23 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
   if (req.body.status === "Delivered") {
     order.orderItems.forEach(async (o) => {
       if (o.status === "Processing") {
-        return next(new ErrorHandler("Order not shipped Yet", 404));
+        return next(new ErrorHandler("Item not shipped Yet", 404));
       }
     });
+
     order.orderItems.forEach(async (o) => {
       o.status = "Delivered";
     });
+
+    try {
+      await sendSms({
+        body: `Your Order is Delivered Successfully`,
+        phone_no: user.phone_no,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+
     order.deliveredAt = Date.now();
   }
 
@@ -115,7 +129,7 @@ async function updateStock(id, quantity) {
   await product.save({ validateBeforeSave: false });
 }
 
-// Update Order Status -- ADMIN
+// Delete Order -- ADMIN
 exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
 
@@ -158,7 +172,7 @@ exports.getSellerOrders = catchAsyncErrors(async (req, res, next) => {
 // Update Order Status -- Seller
 exports.updateSellerOrder = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
-
+  const user = await User.findById(order.user);
   if (!order) {
     return next(new ErrorHandler("Order not found with this id", 404));
   }
@@ -186,7 +200,17 @@ exports.updateSellerOrder = catchAsyncErrors(async (req, res, next) => {
     });
   }
 
-  if (lengthOfItems === LengthOfShipped) order.orderStatus = "Shipped";
+  if (lengthOfItems === LengthOfShipped) {
+    try {
+      await sendSms({
+        body: `Your Order is Shipped Successfully`,
+        phone_no: user.phone_no,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+    order.orderStatus = "Shipped";
+  }
 
   await order.save({ validateBeforeSave: false });
 

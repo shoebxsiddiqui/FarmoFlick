@@ -28,6 +28,7 @@
     "react-rating-stars-component": "^2.2.0",
     "redux-devtools": "^3.7.0",
     "stripe": "^14.5.0",
+    "twilio": "^4.19.3",
     "validator": "^13.9.0"
   }
 }

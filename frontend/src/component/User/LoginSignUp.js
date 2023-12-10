@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import FaceIcon from "@material-ui/icons/Face";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, login, register } from "../../actions/userAction.js";
 import { useAlert } from "react-alert";
@@ -30,9 +31,10 @@ const LoginSignUp = () => {
     name: "",
     email: "",
     password: "",
+    phone_no: "",
     role: "user",
   });
-  const { name, email, password, role } = user;
+  const { name, email, password, phone_no, role } = user;
   const [avatar, setAvatar] = useState();
   const [avatarPreview, setAvatarPreview] = useState("/Profile.png");
 
@@ -49,6 +51,7 @@ const LoginSignUp = () => {
     myForm.set("password", password);
     myForm.set("role", role);
     myForm.set("avatar", avatar);
+    myForm.set("phone_no", phone_no);
 
     dispatch(register(myForm));
   };
@@ -159,6 +162,17 @@ const LoginSignUp = () => {
                   required
                   name="name"
                   value={name}
+                  onChange={registerDataChange}
+                />
+              </div>
+              <div className="signUpPhoneNumber">
+                <LocalPhoneIcon />
+                <input
+                  type="tel"
+                  placeholder="Phone No"
+                  required
+                  name="phone_no"
+                  value={phone_no}
                   onChange={registerDataChange}
                 />
               </div>
