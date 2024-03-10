@@ -9,11 +9,19 @@ const cloudinary = require("cloudinary");
 
 // Register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
-  const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    folder: "avatars",
-    width: 150,
-    crop: "scale",
-  });
+  let public_id = process.env.CLOUDINARY_DEFAULT_PROFILE_PUBLIC_ID;
+  let secure_url = process.env.CLOUDINARY_DEFAULT_SECURE_URL;
+
+  if (typeof req.body.avatar === "string") {
+    const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+      folder: "avatars",
+      width: 150,
+      crop: "scale",
+    });
+    public_id = myCloud.public_id;
+    secure_url = myCloud.secure_url;
+  }
+
   const { name, email, password, role, phone_no } = req.body;
 
   const user = await User.create({
@@ -22,8 +30,8 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     password,
     phone_no,
     avatar: {
-      public_id: myCloud.public_id,
-      url: myCloud.secure_url,
+      public_id: public_id,
+      url: secure_url,
     },
     role,
   });
@@ -265,5 +273,3 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
     message: "User deleted successfully",
   });
 });
-
-// Seller
